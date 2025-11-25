@@ -20,13 +20,14 @@ RUN echo "zend_extension=opcache.so" > /usr/local/etc/php/conf.d/docker-php-ext-
     && echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 # Copy and extract project files
-RUN wget -O /var/www/html/dipas.zip https://bitbucket.org/geowerkstatt-hamburg/dipas/downloads/dipas-os-3.3.2.zip \
+RUN wget -O /var/www/html/dipas.zip https://bitbucket.org/geowerkstatt-hamburg/dipas/downloads/dipas-os-4.0.11.zip \
     && unzip /var/www/html/dipas.zip -d /var/www/html/dipas/ \
     && rm -rf /var/www/html/dipas.zip
 
 # Copy configuration files
 COPY ./config/drupal/settings.php /var/www/html/dipas/htdocs/drupal/sites/default/settings.php
 COPY ./config/drupal/drupal.services.yml /var/www/html/dipas/config/drupal.services.yml
+COPY ./config/drupal/drupal.reverse-proxy-settings.php /var/www/html/dipas/config/drupal.reverse-proxy-settings.php
 
 # Copy and set entrypoint script
 COPY ./entrypoint.sh /entrypoint.sh

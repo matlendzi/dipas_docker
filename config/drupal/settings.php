@@ -323,74 +323,6 @@ $settings['update_free_access'] = FALSE;
 # $settings['http_client_config']['proxy']['https'] = 'http://proxy_user:proxy_pass@example.com:8080';
 # $settings['http_client_config']['proxy']['no'] = ['127.0.0.1', 'localhost'];
 
-/**
- * Reverse Proxy Configuration:
- *
- * Reverse proxy servers are often used to enhance the performance
- * of heavily visited sites and may also provide other site caching,
- * security, or encryption benefits. In an environment where Drupal
- * is behind a reverse proxy, the real IP address of the client should
- * be determined such that the correct client IP address is available
- * to Drupal's logging, statistics, and access management systems. In
- * the most simple scenario, the proxy server will add an
- * X-Forwarded-For header to the request that contains the client IP
- * address. However, HTTP headers are vulnerable to spoofing, where a
- * malicious client could bypass restrictions by setting the
- * X-Forwarded-For header directly. Therefore, Drupal's proxy
- * configuration requires the IP addresses of all remote proxies to be
- * specified in $settings['reverse_proxy_addresses'] to work correctly.
- *
- * Enable this setting to get Drupal to determine the client IP from
- * the X-Forwarded-For header (or $settings['reverse_proxy_header'] if set).
- * If you are unsure about this setting, do not have a reverse proxy,
- * or Drupal operates in a shared hosting environment, this setting
- * should remain commented out.
- *
- * In order for this setting to be used you must specify every possible
- * reverse proxy IP address in $settings['reverse_proxy_addresses'].
- * If a complete list of reverse proxies is not available in your
- * environment (for example, if you use a CDN) you may set the
- * $_SERVER['REMOTE_ADDR'] variable directly in settings.php.
- * Be aware, however, that it is likely that this would allow IP
- * address spoofing unless more advanced precautions are taken.
- */
-# $settings['reverse_proxy'] = TRUE;
-
-/**
- * Specify every reverse proxy IP address in your environment.
- * This setting is required if $settings['reverse_proxy'] is TRUE.
- */
-# $settings['reverse_proxy_addresses'] = ['a.b.c.d', ...];
-
-/**
- * Set this value if your proxy server sends the client IP in a header
- * other than X-Forwarded-For.
- */
-# $settings['reverse_proxy_header'] = 'X_CLUSTER_CLIENT_IP';
-
-/**
- * Set this value if your proxy server sends the client protocol in a header
- * other than X-Forwarded-Proto.
- */
-# $settings['reverse_proxy_proto_header'] = 'X_FORWARDED_PROTO';
-
-/**
- * Set this value if your proxy server sends the client protocol in a header
- * other than X-Forwarded-Host.
- */
-# $settings['reverse_proxy_host_header'] = 'X_FORWARDED_HOST';
-
-/**
- * Set this value if your proxy server sends the client protocol in a header
- * other than X-Forwarded-Port.
- */
-# $settings['reverse_proxy_port_header'] = 'X_FORWARDED_PORT';
-
-/**
- * Set this value if your proxy server sends the client protocol in a header
- * other than Forwarded.
- */
-# $settings['reverse_proxy_forwarded_header'] = 'FORWARDED';
 
 /**
  * Page caching:
@@ -775,7 +707,10 @@ $settings['config_sync_directory'] = "$config_path/sync";
 $settings['hash_salt'] = require_once("$config_path/drupal.salt.inc.php");
 #$databases = require_once("$config_path/drupal.database-settings.php");
 
-#include "$config_path/drupal.reverse-proxy-settings.php";
+// Include reverse proxy settings if the file exists
+if (file_exists("$config_path/drupal.reverse-proxy-settings.php")) {
+  include "$config_path/drupal.reverse-proxy-settings.php";
+}
 
 // Configuration settings for the local environment indicator.
 $config['environment_indicator.indicator']['name'] = 'LIVE';

@@ -23,6 +23,8 @@ services:
       DRUPAL_ADMIN_PASS: ${DRUPAL_ADMIN_PASS}
       DRUPAL_SITE_NAME: ${DRUPAL_SITE_NAME}
       DRUPAL_SITE_DOMAIN: ${DRUPAL_SITE_DOMAIN}
+      REVERSE_PROXY_ENABLED: ${REVERSE_PROXY_ENABLED}
+      REVERSE_PROXY_ADDRESSES: ${REVERSE_PROXY_ADDRESSES}
     volumes:
       - drupal-data:/var/www/html/dipas/htdocs/drupal/sites/default/files
     networks:

@@ -32,6 +32,7 @@ if [ -f "$MARKER" ]; then
         && chmod 444 /var/www/html/dipas/htdocs/drupal/.htaccess \
         && chmod 644 /var/www/html/dipas/htdocs/drupal/sites/default/settings.php \
         && chmod 644 /var/www/html/dipas/config/drupal.services.yml \
+        && chmod 644 /var/www/html/dipas/config/drupal.reverse-proxy-settings.php \
         && chmod -R 755 /var/www/html/dipas/htdocs/drupal/sites/default/files
 
     echo "DIPAS setup is ready!"
@@ -58,6 +59,7 @@ if PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAM
         && chmod 444 /var/www/html/dipas/htdocs/drupal/.htaccess \
         && chmod 644 /var/www/html/dipas/htdocs/drupal/sites/default/settings.php \
         && chmod 644 /var/www/html/dipas/config/drupal.services.yml \
+        && chmod 644 /var/www/html/dipas/config/drupal.reverse-proxy-settings.php \
         && chmod -R 755 /var/www/html/dipas/htdocs/drupal/sites/default/files
 
     # Marker setzen, damit künftige Starts die DB gar nicht mehr anfassen
@@ -82,6 +84,7 @@ else
         && chmod 444 /var/www/html/dipas/htdocs/drupal/.htaccess \
         && chmod 644 /var/www/html/dipas/htdocs/drupal/sites/default/settings.php \
         && chmod 644 /var/www/html/dipas/config/drupal.services.yml \
+        && chmod 644 /var/www/html/dipas/config/drupal.reverse-proxy-settings.php \
         && chmod -R 755 /var/www/html/dipas/htdocs/drupal/sites/default/files
 
     # Run Drush installation and other necessary commands
@@ -89,6 +92,9 @@ else
     su www-data -s /bin/bash -c "vendor/bin/drush site-install --db-url=pgsql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} \
     --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASS} \
     --site-name='${DRUPAL_SITE_NAME}' --yes --existing-config"
+
+    # Enable locale module before importing translations
+    su www-data -s /bin/bash -c "vendor/bin/drush pm-enable locale -y"
 
     # Import translation files
     su www-data -s /bin/bash -c "vendor/bin/drush locale:import de /var/www/html/dipas/config/de.po --type=not-customized"
